@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>2026年 年収の壁チェッカー</title>
+<meta name="description" content="2026年（令和8年）の給与収入の見込みから、所得税・住民税・扶養する人の控除・社会保険の「年収の壁」を超えるかどうかと、次の壁まであと何円かの目安を表示する無料ツールです。入力はお使いの端末内だけで計算し、送信・保存しません。">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+<header class="site-header">
+  <div class="wrap">
+    <p class="eyebrow">2026年（令和8年）分・2026年10月時点の公表資料にもとづく</p>
+    <h1>2026年 年収の壁チェッカー</h1>
+    <p class="lead">アルバイト・パートの給与収入の見込みから、<strong>所得税</strong>・<strong>住民税</strong>・<strong>扶養する人の控除</strong>・<strong>社会保険</strong>の壁を超えるかどうかと、次の壁まであと何円かの<strong>目安</strong>を表示します。</p>
+    <p class="privacy-pill">入力した内容はお使いの端末の中だけで計算し、送信も保存もしません。</p>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <noscript><p class="notice">このツールは JavaScript を使って端末内で計算します。JavaScript を有効にしてご利用ください。</p></noscript>
+
+  <section class="card" aria-labelledby="input-h">
+    <h2 id="input-h">条件を入力</h2>
+    <div id="inputs">
+      <div class="field">
+        <label for="revenue">2026年の給与収入の見込み（1〜12月の合計・税込）</label>
+        <div class="yen-input">
+          <input id="revenue" name="revenue" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="例: 1500000 または 150万" aria-describedby="revenue-hint revenue-err">
+          <span aria-hidden="true">円</span>
+        </div>
+        <p id="revenue-hint" class="hint">1月〜12月に支払われる（支払われる予定の）給与・賞与の合計です。通勤手当（交通費）は含めずに入力してください（税金の計算には含めません）。<strong>社会保険の扶養</strong>の判定では、通勤手当も含めた「今後1年間の収入の見込み」で考えます。通勤手当がある方は、社会保険の結果を見るときにその年額を足した金額でも確かめてください。</p>
+        <p id="revenue-err" class="error" hidden></p>
+      </div>
+
+      <fieldset class="field">
+        <legend>あなたの立場</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="position" value="student" checked> <span>学生で、親などの扶養に入っている・入りたい</span></label>
+          <label class="choice"><input type="radio" name="position" value="parent"> <span>学生ではないが、親などの扶養に入っている・入りたい</span></label>
+          <label class="choice"><input type="radio" name="position" value="spouse"> <span>配偶者（夫・妻）の扶養に入っている・入りたい</span></label>
+          <label class="choice"><input type="radio" name="position" value="other"> <span>その他（扶養に入っていない・入る予定がない）</span></label>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="age">あなたの年齢（2026年12月31日時点）</label>
+        <select id="age" name="age" aria-describedby="age-hint">
+          <option value="u16">15歳以下</option>
+          <option value="a16_17">16〜17歳</option>
+          <option value="a18">18歳</option>
+          <option value="a19_22" selected>19〜22歳</option>
+          <option value="a23_59">23〜59歳</option>
+          <option value="a60_69">60〜69歳</option>
+          <option value="a70_74">70〜74歳</option>
+          <option value="a75p">75歳以上</option>
+        </select>
+        <p id="age-hint" class="hint">19〜22歳かどうかで、親の控除（特定扶養控除・特定親族特別控除）と社会保険の扶養の基準が変わります。17歳以下（2027年1月1日時点で18歳未満）は住民税の未成年者の非課税、75歳以上は後期高齢者医療の扱いになります。</p>
+      </div>
+
+      <div class="field" id="supporter-field" hidden>
+        <label for="supporter">扶養する配偶者の給与収入（2026年の見込み）</label>
+        <select id="supporter" name="supporter" aria-describedby="supporter-hint">
+          <option value="s1" selected>1,095万円以下</option>
+          <option value="s2">1,095万円超 1,145万円以下</option>
+          <option value="s3">1,145万円超 1,195万円以下</option>
+          <option value="s4">1,195万円超</option>
+          <option value="unknown">わからない</option>
+        </select>
+        <p id="supporter-hint" class="hint">配偶者控除・配偶者特別控除の額は、扶養する人の所得によって変わります（給与収入だけの場合の目安）。</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>勤務先の規模（厚生年金に入っている従業員の数）</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="size" value="large"> <span>51人以上</span></label>
+          <label class="choice"><input type="radio" name="size" value="small"> <span>50人以下</span></label>
+          <label class="choice"><input type="radio" name="size" value="public"> <span>国・地方公共団体（役所・公立学校など）</span></label>
+          <label class="choice"><input type="radio" name="size" value="unknown" checked> <span>わからない</span></label>
+        </div>
+        <p class="hint">複数の勤務先がある場合は、それぞれで判定が必要です（このツールは1か所を想定しています）。</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>週の所定労働時間（契約上の時間）</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="hours" value="lt20"> <span>週20時間未満</span></label>
+          <label class="choice"><input type="radio" name="hours" value="ge20"> <span>週20時間以上（正社員の4分の3未満）</span></label>
+          <label class="choice"><input type="radio" name="hours" value="full"> <span>正社員の4分の3以上（週30時間程度以上など）</span></label>
+          <label class="choice"><input type="radio" name="hours" value="unknown" checked> <span>わからない</span></label>
+        </div>
+      </fieldset>
+
+      <button type="button" id="run" class="primary">判定する</button>
+    </div>
+  </section>
+
+  <section id="result" class="result" aria-live="polite" aria-labelledby="result-h" hidden>
+    <h2 id="result-h" tabindex="-1">判定の目安</h2>
+    <div id="result-body"></div>
+    <p class="disclaimer" id="disclaimer-under-result">
+      この結果は、入力された数値をもとに一般的な計算式で算出した<strong>目安</strong>です。税務上の判断や申告内容、社会保険の加入・扶養の可否を示すものではありません。<strong>2026年（令和8年）分</strong>の制度（2026年10月時点の公表資料）に基づいています。実際の取り扱いは、勤務先・税務署・年金事務所（扶養の認定は扶養する人の勤務先・健康保険組合）でご確認ください。入力内容はお使いの端末内だけで計算し、送信・保存しません。個別のご相談には応じていません。
+    </p>
+
+    <aside class="book" aria-labelledby="book-h">
+      <h3 id="book-h">このツールの作者が書いた本</h3>
+      <p>このツールを作った「こんきょ文庫」が、2026年の年収の壁と年末調整の申告書の書き方を、ケース別の記入例つきで Kindle 本にまとめています（宣伝です）。</p>
+      <p><a id="book-link" href="https://www.amazon.co.jp/dp/B0HNLGB5MN" rel="noopener noreferrer">『2026年 はじめての「178万円の壁」と年末調整』（Amazon の商品ページ）</a></p>
+    </aside>
+  </section>
+
+  <section class="card info" aria-labelledby="how-h">
+    <h2 id="how-h">このツールが見ている「壁」</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="年収の壁の一覧（スクロールできます）">
+    <table class="walls">
+      <caption>2026年分の主な基準（給与収入だけの場合）</caption>
+      <thead><tr><th scope="col">金額</th><th scope="col">何の壁か</th><th scope="col">対象</th></tr></thead>
+      <tbody>
+        <tr><td>119万円</td><td>住民税（所得割）がかかり始める（単身）。均等割は自治体で異なる</td><td>本人</td></tr>
+        <tr><td>130万円<small>（未満）</small></td><td>社会保険の扶養から外れる。19歳以上23歳未満（被保険者の配偶者を除く）は150万円、60歳以上または障害者は180万円。75歳以上は後期高齢者医療の被保険者になるため、収入にかかわらず扶養に入れない。通勤手当も含めた今後1年間の見込みで判定</td><td>本人</td></tr>
+        <tr><td>136万円</td><td>扶養控除・配偶者控除・特定扶養控除の所得要件</td><td>扶養する人</td></tr>
+        <tr><td>159万円</td><td>特定親族特別控除（19〜22歳）が減り始める</td><td>扶養する人</td></tr>
+        <tr><td>169万円</td><td>配偶者特別控除が減り始める</td><td>扶養する人</td></tr>
+        <tr><td>178万円</td><td>超えると課税される所得が生じ始める（切り捨てのため、実際に年税額が出るのは178万2,000円から）。2026・2027年分の金額</td><td>本人</td></tr>
+        <tr><td>197万円</td><td>特定親族特別控除がなくなる</td><td>扶養する人</td></tr>
+        <tr><td>207万円</td><td>配偶者特別控除がなくなる</td><td>扶養する人</td></tr>
+        <tr><td>209万円</td><td>未成年者（2027年1月1日時点で18歳未満）の住民税の非課税の上限（均等割・所得割とも）</td><td>本人</td></tr>
+        <tr><td>週20時間</td><td>51人以上の勤務先などで社会保険に加入（学生を除く）。「106万円（月8.8万円）」の要件は撤廃（2026年10月1日）。最低賃金の減額特例の対象者は例外。70歳以上は厚生年金に入らない</td><td>本人</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="hint">「以下」「未満」の違いに注意してください。税金の基準は「以下」、社会保険の扶養の基準は「未満」です。</p>
+  </section>
+
+  <section class="card info" aria-labelledby="scope-h">
+    <h2 id="scope-h">判定しないこと（対象外・要確認）</h2>
+    <ul>
+      <li>給与以外の所得（副業の事業所得・雑所得、年金など）がある場合</li>
+      <li>住民税の均等割（市区町村ごとに基準が異なります）、障害者・寡婦・ひとり親の非課税の基準（未成年者の非課税は判定します）</li>
+      <li>通勤手当（交通費）を足した社会保険の年間収入（入力した給与収入だけで判定します）</li>
+      <li>60歳の誕生日前後の方の社会保険の扶養の基準（130万円・180万円のどちらになるかは扶養する人の勤務先で確認してください）</li>
+      <li>社会保険料控除などを差し引いた実際の税額、年末調整での還付額</li>
+      <li>健康保険組合ごとの扶養の認定方法、同居・別居による収入の条件（扶養する人の収入の半分未満など）</li>
+      <li>勤務先の家族手当などの社内規程</li>
+      <li>障害者控除、ひとり親控除、勤労学生控除などの個別の控除</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <h2 class="footer-h">ご利用にあたって</h2>
+    <p>この計算結果は、入力された数値をもとに一般的な計算式で算出した目安です。税務上の判断や申告内容を示すものではありません。2026年（令和8年）分の制度に基づいています（基準日: 2026年10月25日時点の国税庁・総務省・日本年金機構・厚生労働省の公表資料）。実際の申告は国税庁の「確定申告書等作成コーナー」等でご確認ください。個別のご相談には応じていません。本ツールの内容を利用した結果について、作者は責任を負いかねます。</p>
+    <h3>確認先</h3>
+    <ul>
+      <li>税金（所得税）・年末調整: 勤務先の担当部署、所轄の税務署</li>
+      <li>住民税: お住まいの市区町村の住民税担当</li>
+      <li>社会保険の加入: 勤務先、年金事務所</li>
+      <li>社会保険の扶養: 扶養する人の勤務先、健康保険組合・協会けんぽ、年金事務所</li>
+    </ul>
+    <h3 id="privacy">プライバシー</h3>
+    <p>このページは個人情報を取得しません。入力内容はお使いのブラウザの中だけで計算し、どこにも送信・保存しません。Cookie、アクセス解析、広告、外部のスクリプトは使っていません。なお、ページを配信する GitHub Pages（GitHub, Inc.）は、セキュリティなどの目的で閲覧者の IP アドレスを記録することがあります。</p>
+    <h3>作者</h3>
+    <p>こんきょ文庫。税理士・社会保険労務士ではありません。国税庁・日本年金機構・厚生労働省などの公表資料をもとに作成しています。判定ロジックと出典は <a href="rules.js">rules.js</a> で公開しています。AI を利用して作成し、公表資料と照合しています。</p>
+    <p class="small">最終確認日: 2026年10月25日 ／ 対象: 2026年（令和8年）分</p>
+  </div>
+</footer>
+<script src="rules.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
